@@ -1,0 +1,23 @@
+body {
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 300;
+  font-style: normal;
+  font-variation-settings: 'slnt' 0;
+}
+
+.articleList {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin: 24px auto;
+  padding: 0 24px;
+  max-width: 938px;
+}
+
+.paginationWapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 24px;
+}

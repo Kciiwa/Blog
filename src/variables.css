@@ -1,0 +1,8 @@
+:root {
+  --heading-color: rgba(0, 0, 0, 0.85);
+  --sucess-color: #52c41a;
+  --background-color-base: #ffffff;
+  --info-color: #1890ff;
+  --text-color-secondary: rgba(0, 0, 0, 0.5);
+  --text-color: rgba(0, 0, 0, 0.75);
+}
