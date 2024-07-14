@@ -26,6 +26,7 @@
   },
   "plugins": ["react", "import"],
   "rules": {
+    "jsx-a11y/label-has-associated-control": 0,
     "default-param-last": 0,
     "no-await-in-loop": 0,
     "indent": ["error", 2],

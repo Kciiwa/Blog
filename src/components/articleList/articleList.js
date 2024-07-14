@@ -36,6 +36,7 @@ function ArticleList() {
             tagList={item.tagList}
             favoritesCount={item.favoritesCount}
             author={item.author}
+            createdAt={item.createdAt}
           />
         ))}
       </section>

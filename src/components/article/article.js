@@ -2,13 +2,17 @@
 import React from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import { Link } from 'react-router-dom'
+import { format } from 'date-fns'
+import { enGB } from 'date-fns/locale'
 
 import useTruncatedText from '../../hooks/useTruncatedText'
 
 import styles from './article.module.css'
 
-function Article({ title, description, tagList, favoritesCount, author, slug }) {
+function Article({ title, description, tagList, favoritesCount, author, slug, createdAt }) {
   const shortDescription = useTruncatedText(description, 100)
+
+  const dateOfCreation = format(createdAt, 'MMMM d, yyyy', { locale: enGB })
 
   return (
     <div className={styles.article}>
@@ -39,7 +43,10 @@ function Article({ title, description, tagList, favoritesCount, author, slug }) 
         <p className={styles.description}>{shortDescription}</p>
       </div>
       <div className={styles.author}>
-        <h6 className={styles.username}>{author?.username}</h6>
+        <div className={styles.createdByAt}>
+          <h6 className={styles.username}>{author?.username}</h6>
+          <p className={styles.date}>{dateOfCreation}</p>
+        </div>
         <img
           className={styles.avatar}
           src={author?.image}

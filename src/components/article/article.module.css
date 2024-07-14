@@ -91,5 +91,14 @@
   border-radius: 0;
 }
 
-.body {
+.createdByAt {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.date {
+  font-size: 12px;
+  line-height: 22px;
+  color: var(--text-color-secondary);
 }

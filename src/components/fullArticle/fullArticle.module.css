@@ -92,6 +92,18 @@
   line-height: 28px;
 }
 
+.createdByAt {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.date {
+  font-size: 12px;
+  line-height: 22px;
+  color: var(--text-color-secondary);
+}
+
 .avatar {
   border-radius: 50%;
 }

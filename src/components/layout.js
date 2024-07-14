@@ -11,18 +11,15 @@ function Layout() {
         <Link to="/" className={styles.logo}>
           Realworld Blog
         </Link>
-        <button className={styles.buttonIn} type="button">
-          <h6>Sign In</h6>
-        </button>
-        <button className={styles.buttonUp} type="button">
-          <h6>Sign Up</h6>
-        </button>
+        <Link to="signInPage" className={styles.buttonIn} type="button">
+          Sign In
+        </Link>
+        <Link to="/signUpPage" className={styles.buttonUp} type="button">
+          Sign Up
+        </Link>
       </header>
 
       <Outlet />
-      {/* <main className={styles.main}>
-        <ArticleList />
-      </main> */}
     </>
   )
 }
