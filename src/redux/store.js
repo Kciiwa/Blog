@@ -1,11 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit'
 
 import { articlesApi } from './api'
-// import counterReducer from '../features/counter/counterSlice';
+import userReducer from './userSlice' // Импортируем ваш срез состояния для пользователя
 
 const store = configureStore({
   reducer: {
-    // counter: counterReducer,
+    user: userReducer,
     [articlesApi.reducerPath]: articlesApi.reducer,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(articlesApi.middleware),

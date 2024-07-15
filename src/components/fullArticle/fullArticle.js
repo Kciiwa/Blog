@@ -23,7 +23,7 @@ function FullArticle() {
       ? format(article?.createdAt, 'MMMM d, yyyy', { locale: enGB })
       : null
 
-  console.log(article)
+  // console.log(article)
 
   if (isLoading) return <h1>Loading...</h1>
   return (

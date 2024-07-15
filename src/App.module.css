@@ -3,18 +3,18 @@
 /* @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap'); */
 @import url('./variables');
 
-* {
+/* * {
   box-sizing: border-box;
-  /* font-family: 'Inter', sans-serif; */
   font-optical-sizing: auto;
   font-weight: 300;
   font-style: normal;
   font-variation-settings: 'slnt' 0;
-}
+} */
 
 .header {
   width: 100%;
   display: flex;
+  gap: 30px;
   background-color: var(--background-color-base);
   align-items: center;
   justify-content: space-between;
@@ -38,6 +38,7 @@
 }
 
 .buttonIn {
+  display: flex;
   border: none;
   background-color: transparent;
   font-size: 18px !important;
@@ -46,6 +47,8 @@
   width: 109px;
   height: 51px;
   cursor: pointer;
+  align-items: center;
+  justify-content: center;
 }
 
 .buttonUp {
@@ -58,6 +61,39 @@
   width: 109px;
   height: 51px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.buttonCreateArticle {
+  width: 113px;
+  height: 31px;
+  font-size: 14px;
+  line-height: 22px;
+}
+
+.profile {
+  text-decoration: none;
+  color: var(--text-color);
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.username {
+  font-size: 18px;
+  line-height: 28px;
+  font-weight: 300;
+}
+
+.avatar {
+  border-radius: 50%;
+}
+
+.buttonLogout {
+  border-color: var(--text-color);
+  color: var(--text-color);
 }
 
 body {

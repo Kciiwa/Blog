@@ -35,6 +35,7 @@
   line-height: 28px;
   letter-spacing: 0;
   text-transform: capitalize;
+  font-weight: 300;
 }
 
 .likes {
@@ -90,6 +91,7 @@
   color: var(---heading-color);
   font-size: 18px;
   line-height: 28px;
+  font-weight: 300;
 }
 
 .createdByAt {
