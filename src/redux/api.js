@@ -34,6 +34,16 @@ export const articlesApi = createApi({
         body,
       }),
     }),
+    createArticle: build.mutation({
+      query: ({ body, token }) => ({
+        url: 'articles',
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body,
+      }),
+    }),
   }),
 })
 
@@ -43,4 +53,5 @@ export const {
   useAddUserMutation,
   useLoginUserMutation,
   useEditProfileMutation,
+  useCreateArticleMutation,
 } = articlesApi

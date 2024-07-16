@@ -1,6 +1,6 @@
 /* eslint-disable indent */
 import React from 'react'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { v4 as uuidv4 } from 'uuid'
 import Markdown from 'markdown-to-jsx'
 import { format } from 'date-fns'
@@ -11,12 +11,16 @@ import { useGetArticleQuery } from '../../redux/api'
 import styles from './fullArticle.module.css'
 
 function FullArticle() {
+  const currentUsername = localStorage.getItem('username')
+
+  // console.log(currentUsername)
+
   const { slug } = useParams()
 
   const { data = {}, isLoading } = useGetArticleQuery({ slug })
   const { article } = data
 
-  console.log(article?.createdAt)
+  // console.log(article.author.username)
 
   const dateOfCreation =
     article?.createdAt !== undefined
@@ -55,18 +59,30 @@ function FullArticle() {
           </div>
           <p className={styles.description}>{article.description}</p>
         </div>
-        <div className={styles.author}>
-          <div className={styles.createdByAt}>
-            <h6 className={styles.username}>{article.author?.username}</h6>
-            <p className={styles.date}>{dateOfCreation}</p>
+        <div className={styles.authorEditWrapper}>
+          <div className={styles.author}>
+            <div className={styles.createdByAt}>
+              <h6 className={styles.username}>{article.author?.username}</h6>
+              <p className={styles.date}>{dateOfCreation}</p>
+            </div>
+            <img
+              className={styles.avatar}
+              src={article?.author?.image}
+              alt="author"
+              width="46px"
+              height="46px"
+            />
           </div>
-          <img
-            className={styles.avatar}
-            src={article?.author?.image}
-            alt="author"
-            width="46px"
-            height="46px"
-          />
+          {currentUsername === article.author.username ? (
+            <div className={styles.buttons}>
+              <button type="button" className={styles.deleteBtn}>
+                Delete
+              </button>
+              <Link to={`/articles/${slug}/edit`} className={styles.editBtn}>
+                Edit
+              </Link>
+            </div>
+          ) : null}
         </div>
       </div>
       <div className={styles.body}>

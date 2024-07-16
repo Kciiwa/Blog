@@ -41,6 +41,8 @@ function SignUp() {
 
       console.log('User created successfully:', userData)
       localStorage.setItem('token', userData.user.token)
+      localStorage.setItem('username', userData.user.username)
+      localStorage.setItem('image', userData.user.image)
       // localStorage.setItem('user', userData.user.username)
       dispatch(setUser(userData.user))
       // console.log(` из стора ${store.getState()}`)

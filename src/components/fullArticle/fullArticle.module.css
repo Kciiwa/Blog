@@ -82,9 +82,16 @@
   line-height: 22px;
 }
 
+.authorEditWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
 .author {
   display: flex;
   gap: 16px;
+  margin-left: auto;
 }
 
 .username {
@@ -112,4 +119,43 @@
 
 .body {
   word-wrap: break-word;
+}
+
+.buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.deleteBtn {
+  width: 78px;
+  height: 31px;
+  border: 1px solid var(--highlight-color);
+  color: var(--highlight-color);
+  border-radius: 5px;
+  background-color: transparent;
+  transition: all 0.1s ease;
+}
+
+.deleteBtn:active {
+  background-color: var(--highlight-color);
+  color: var(--background-color-base);
+}
+
+.editBtn {
+  text-decoration: none;
+  width: 66px;
+  height: 31px;
+  border: 1px solid var(--sucess-color);
+  color: var(--sucess-color);
+  border-radius: 5px;
+  background-color: transparent;
+  transition: all 0.1s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.editBtn:active {
+  background-color: var(--sucess-color);
+  color: var(--background-color-base);
 }

@@ -16,6 +16,8 @@ function Layout() {
 
   const handleLogout = () => {
     localStorage.removeItem('token')
+    localStorage.removeItem('username')
+    localStorage.removeItem('image')
     dispatch(setUser(null))
     navigate('/')
   }
@@ -38,7 +40,7 @@ function Layout() {
         ) : (
           <>
             <Link
-              to="/createArticle"
+              to="/new-article"
               className={`${styles.buttonUp} ${styles.buttonCreateArticle} `}
               type="button"
             >
