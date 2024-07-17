@@ -1,9 +1,13 @@
 import React from 'react'
+import { useLocation } from 'react-router-dom'
 
-import EditArticleForm from '../components/editArticleForm/editArticleForm'
+import NewArticleForm from '../components/newArticleForm/newArticleForm'
 
-function EditArticlePage() {
-  return <EditArticleForm />
+function NewArticlePage() {
+  const location = useLocation()
+  const { article } = location.state || {}
+
+  return <NewArticleForm article={article} editmode={!!article} />
 }
 
-export default EditArticlePage
+export default NewArticlePage

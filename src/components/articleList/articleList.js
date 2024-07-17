@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Pagination } from 'antd'
 
 import { useGetArticlesQuery } from '../../redux/api'
@@ -11,10 +11,18 @@ function ArticleList() {
   const [page, setPage] = useState(1)
   const limit = 5
   const offset = (page - 1) * limit
-  const { data = { articles: [], articlesCount: 0 }, isLoading } = useGetArticlesQuery({
+  const {
+    data = { articles: [], articlesCount: 0 },
+    isLoading,
+    refetch,
+  } = useGetArticlesQuery({
     limit,
     offset,
   })
+
+  useEffect(() => {
+    refetch()
+  }, [refetch])
 
   console.log(data.articlesCount)
 

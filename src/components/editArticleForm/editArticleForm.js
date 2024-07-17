@@ -1,12 +1,19 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React from 'react'
 import { useFieldArray, useForm } from 'react-hook-form'
+import { useParams } from 'react-router-dom'
+import { v4 as uuidv4 } from 'uuid'
 
-import { useCreateArticleMutation } from '../../redux/api'
+import { useGetArticleQuery } from '../../redux/api'
 
 import styles from './editArticleForm.module.css'
 
 function EditArticleForm() {
+  const { slug } = useParams()
+
+  const { data = {} } = useGetArticleQuery({ slug })
+  const { article } = data
+  console.log(article.tagList)
   const {
     register,
     handleSubmit,
@@ -14,7 +21,10 @@ function EditArticleForm() {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      tags: [],
+      title: article?.title || '',
+      description: article?.description || '',
+      text: article?.body,
+      tags: article?.tagList || [],
     },
   })
 
@@ -22,27 +32,28 @@ function EditArticleForm() {
     control,
     name: 'tags',
   })
+  //   console.log(`fields ${fields}`)
 
-  const [createArticle] = useCreateArticleMutation()
+  //   const [createArticle] = useCreateArticleMutation()
 
-  const onSubmit = async (data) => {
+  const onSubmit = async () => {
     // dispatch(setLoading(true))
-    try {
-      const articleData = await createArticle({
-        body: {
-          article: {
-            title: data.title,
-            description: data.description,
-            body: data.text,
-            tags: data.tags,
-          },
-        },
-        token: localStorage.getItem('token'),
-      }).unwrap()
-      console.log('article created successfully: ', articleData)
-    } catch (err) {
-      console.error('oops ', err.message)
-    }
+    //     try {
+    //       const articleData = await createArticle({
+    //         body: {
+    //           article: {
+    //             title: data.title,
+    //             description: data.description,
+    //             body: data.text,
+    //             tags: data.tags,
+    //           },
+    //         },
+    //         token: localStorage.getItem('token'),
+    //       }).unwrap()
+    //       console.log('article created successfully: ', articleData)
+    //     } catch (err) {
+    //       console.error('oops ', err.message)
+    //     }
   }
 
   const handleAddTag = (e) => {
@@ -109,9 +120,21 @@ function EditArticleForm() {
         <div className={styles.tagsContainer}>
           <label className={styles.textLabel}>
             <p className={styles.textLabel}>Tags</p>
+            {article.tagList.map((tag) => (
+              <div className={styles.savedTagWrapper} key={uuidv4()}>
+                <input className={styles.tag} value={tag} disabled />
+                <button
+                  type="button"
+                  onClick={(e) => handleRemoveTag(e)}
+                  className={styles.deleteButton}
+                >
+                  Delete
+                </button>
+              </div>
+            ))}
             {fields.map((field, index) => (
               <div className={styles.savedTagWrapper} key={field.id}>
-                <p className={styles.tag}>{field.tag}</p>
+                <input className={styles.tag} value={field.tag} disabled />
                 <button
                   type="button"
                   onClick={(e) => handleRemoveTag(index, e)}

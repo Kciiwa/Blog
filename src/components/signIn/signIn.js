@@ -38,6 +38,7 @@ function SignIn() {
       setSuccess(true)
       localStorage.setItem('username', userData.user.username)
       localStorage.setItem('image', userData.user.image)
+
       navigate('/')
     } catch (err) {
       setErrorLocal([...error, err.message])
@@ -46,6 +47,12 @@ function SignIn() {
       dispatch(setLoading(false))
     }
   }
+
+  // const { data = { articles: [] } } = useGetArticleByUsernameQuery(
+  //   // eslint-disable-next-line no-return-await
+  //   async () => await localStorage.getItem('username')
+  // )
+  // console.log(data)
 
   return (
     <div className={style.formWrapper}>

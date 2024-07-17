@@ -1,23 +1,33 @@
 /* eslint-disable indent */
-import React from 'react'
-import { Link, useParams } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { v4 as uuidv4 } from 'uuid'
 import Markdown from 'markdown-to-jsx'
 import { format } from 'date-fns'
 import { enGB } from 'date-fns/locale'
 
-import { useGetArticleQuery } from '../../redux/api'
+import { useDeleteArticleMutation, useGetArticleQuery } from '../../redux/api'
+import ModalWindow from '../modalWindow/modalWindow'
 
 import styles from './fullArticle.module.css'
 
 function FullArticle() {
+  const [modal, setModal] = useState(false)
   const currentUsername = localStorage.getItem('username')
 
   // console.log(currentUsername)
+  const navigate = useNavigate()
 
   const { slug } = useParams()
+  const token = localStorage.getItem('token')
 
-  const { data = {}, isLoading } = useGetArticleQuery({ slug })
+  const { data = {}, isLoading, refetch } = useGetArticleQuery({ slug })
+
+  const [deleteArticle] = useDeleteArticleMutation()
+
+  useEffect(() => {
+    refetch()
+  }, [refetch])
   const { article } = data
 
   // console.log(article.author.username)
@@ -27,7 +37,35 @@ function FullArticle() {
       ? format(article?.createdAt, 'MMMM d, yyyy', { locale: enGB })
       : null
 
-  // console.log(article)
+  const showModal = () => {
+    setModal(true)
+  }
+
+  const closeModal = () => {
+    setModal(false)
+  }
+
+  const handleDelete = async () => {
+    try {
+      await deleteArticle({
+        token,
+        slug,
+      }).unwrap()
+      console.log('delete article')
+
+      // localStorage.setItem('token', userData.user.token)
+      // dispatch(setUser(userData.user))
+      // setSuccess(true)
+      // localStorage.setItem('username', userData.user.username)
+      // localStorage.setItem('image', userData.user.image)
+
+      navigate('/')
+    } catch (err) {
+      console.log(`не получилось удалить статью: ${err}`)
+    }
+  }
+
+  // console.log(article.title)
 
   if (isLoading) return <h1>Loading...</h1>
   return (
@@ -46,7 +84,7 @@ function FullArticle() {
           <div className={styles.tagList}>
             {article?.tagList?.length !== 0
               ? article.tagList.map((tag) => {
-                  if (tag.trim() !== '') {
+                  if (tag && tag.trim() !== '') {
                     return (
                       <span key={uuidv4()} className={styles.tag}>
                         {tag}
@@ -75,12 +113,19 @@ function FullArticle() {
           </div>
           {currentUsername === article.author.username ? (
             <div className={styles.buttons}>
-              <button type="button" className={styles.deleteBtn}>
+              <button type="button" className={styles.deleteBtn} onClick={showModal}>
                 Delete
               </button>
-              <Link to={`/articles/${slug}/edit`} className={styles.editBtn}>
+              <Link to={`/articles/${slug}/edit`} state={{ article }} className={styles.editBtn}>
                 Edit
               </Link>
+              {modal && (
+                <ModalWindow
+                  closeModal={closeModal}
+                  handleAction={handleDelete}
+                  showModal={showModal}
+                />
+              )}
             </div>
           ) : null}
         </div>

@@ -1,78 +1,94 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useForm, useFieldArray } from 'react-hook-form'
+import { useNavigate, useParams } from 'react-router-dom'
 
-// import { setLoading } from '../../redux/userSlice'
-import { useCreateArticleMutation } from '../../redux/api'
+import { useCreateArticleMutation, useUpdateArticleMutation } from '../../redux/api'
 
 import styles from './newArticleForm.module.css'
 
-function NewArticleForm() {
-  //   const navigate = useNavigate()
-  //   const dispatch = useDispatch()
+function NewArticleForm({ editmode = false, article }) {
+  const { slug } = useParams()
+  const navigate = useNavigate()
+  console.log(slug)
+
+  console.log(article)
+
   const {
     register,
     handleSubmit,
     control,
     formState: { errors },
+    setValue,
   } = useForm({
     defaultValues: {
-      tags: [],
+      tagList: [],
     },
   })
 
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove, replace } = useFieldArray({
     control,
-    name: 'tags',
+    name: 'tagList',
   })
 
+  useEffect(() => {
+    if (editmode && article) {
+      setValue('title', article.title)
+      setValue('description', article.description)
+      setValue('text', article.body)
+      replace(article.tagList || [])
+    }
+  }, [editmode, article, setValue, replace])
+
   const [createArticle] = useCreateArticleMutation()
+  const [updateArticle] = useUpdateArticleMutation()
 
   const onSubmit = async (data) => {
-    // dispatch(setLoading(true))
-    try {
-      const articleData = await createArticle({
-        body: {
-          article: {
-            title: data.title,
-            description: data.description,
-            body: data.text,
-            tags: data.tags,
+    if (!editmode) {
+      console.log(`${data.tagList}`)
+      try {
+        const articleData = await createArticle({
+          body: {
+            article: {
+              title: data.title,
+              description: data.description,
+              body: data.text,
+              tagList: data.tagList,
+            },
           },
-        },
-        token: localStorage.getItem('token'),
-      }).unwrap()
-      console.log('article created successfully: ', articleData)
-    } catch (err) {
-      console.error('oops ', err.message)
+          token: localStorage.getItem('token'),
+        }).unwrap()
+        console.log('article created successfully: ', articleData)
+      } catch (err) {
+        console.error('oops ', err.message)
+      }
+    } else if (editmode) {
+      console.log(`article was updated ${data}`)
+      try {
+        const articleData = await updateArticle({
+          body: {
+            article: {
+              title: data.title,
+              description: data.description,
+              body: data.text,
+              tagList: data.tagList,
+            },
+          },
+          token: localStorage.getItem('token'),
+          slug,
+        }).unwrap()
+        console.log('article updated successfully: ', articleData)
+      } catch (err) {
+        console.error('oops ', err.message)
+      }
     }
-  }
 
-  const handleAddTag = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
-    const newTag = document.querySelector('input[name="newTag"]').value
-    if (newTag.trim()) {
-      append({ tag: newTag.trim() })
-      document.querySelector('input[name="newTag"]').value = ''
-    }
-  }
-
-  const handleCancelTag = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
-    document.querySelector('input[name="newTag"]').value = ''
-  }
-
-  const handleRemoveTag = (index, e) => {
-    e.preventDefault()
-    e.stopPropagation()
-    remove(index)
+    navigate('/')
   }
 
   return (
     <div className={styles.formWrapper}>
-      <h3 className={styles.header}>Create new article</h3>
+      <h3 className={styles.header}>{editmode ? 'Edit article' : 'Create new article'}</h3>
       <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
         <label className={styles.textLabel}>
           <p className={styles.textLabel}>Title</p>
@@ -110,32 +126,28 @@ function NewArticleForm() {
         {errors.text && <span className={styles.required}>{errors.text.message}</span>}
 
         <div className={styles.tagsContainer}>
-          <label className={styles.textLabel}>
-            <p className={styles.textLabel}>Tags</p>
-            {fields.map((field, index) => (
-              <div className={styles.savedTagWrapper} key={field.id}>
-                <p className={styles.tag}>{field.tag}</p>
-                <button
-                  type="button"
-                  onClick={(e) => handleRemoveTag(index, e)}
-                  className={styles.deleteButton}
-                >
-                  Delete
-                </button>
-              </div>
-            ))}
-            <div className={styles.tagInputContainer}>
-              <input
-                type="text"
-                className={`${styles.tagInput} ${styles.input}`}
-                placeholder="Tag"
-                {...register('newTag', { required: false })}
-              />
-              <button type="button" onClick={handleCancelTag} className={styles.deleteButton}>
-                Delete
-              </button>
-              <button type="button" onClick={handleAddTag} className={styles.addButton}>
-                Add tag
+          <label className={styles.textLabel} htmlFor="Tags">
+            Tags
+            <div>
+              {fields.map((field, index) => (
+                <div key={field.id} className={styles.savedTagWrapper}>
+                  <input
+                    {...register(`tagList.${index}`)}
+                    className={styles.tag}
+                    type="text"
+                    placeholder="Tag"
+                  />
+                  <button
+                    className={styles.deleteButton}
+                    type="button"
+                    onClick={() => remove(index)}
+                  >
+                    Delete
+                  </button>
+                </div>
+              ))}
+              <button className={styles.addButton} type="button" onClick={() => append('')}>
+                Add Tag
               </button>
             </div>
           </label>

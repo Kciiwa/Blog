@@ -44,6 +44,25 @@ export const articlesApi = createApi({
         body,
       }),
     }),
+    updateArticle: build.mutation({
+      query: ({ body, token, slug }) => ({
+        url: `articles/${slug}`,
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body,
+      }),
+    }),
+    deleteArticle: build.mutation({
+      query: ({ token, slug }) => ({
+        url: `articles/${slug}`,
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }),
+    }),
   }),
 })
 
@@ -54,4 +73,6 @@ export const {
   useLoginUserMutation,
   useEditProfileMutation,
   useCreateArticleMutation,
+  useUpdateArticleMutation,
+  useDeleteArticleMutation,
 } = articlesApi

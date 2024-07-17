@@ -10,6 +10,10 @@ import useTruncatedText from '../../hooks/useTruncatedText'
 import styles from './article.module.css'
 
 function Article({ title, description, tagList, favoritesCount, author, slug, createdAt }) {
+  if (!title || !description || !author || !createdAt) {
+    return <h1>Loading...</h1>
+  }
+
   const shortDescription = useTruncatedText(description, 100)
 
   const dateOfCreation = format(createdAt, 'MMMM d, yyyy', { locale: enGB })
@@ -19,7 +23,7 @@ function Article({ title, description, tagList, favoritesCount, author, slug, cr
       <div className={styles.info}>
         <div className={styles.articleHeader}>
           <Link to={`/fullArticlePage/${slug}`} className={styles.title}>
-            {title.trim() !== '' ? title : 'No Title'}
+            {title && title.trim() !== '' ? title : 'No Title'}
           </Link>
           <div className={styles.likes}>
             <button type="button" className={styles.likeBtn} />
@@ -29,7 +33,7 @@ function Article({ title, description, tagList, favoritesCount, author, slug, cr
         <div className={styles.tagList}>
           {tagList.lenght !== 0
             ? tagList.map((tag) => {
-                if (tag.trim() !== '') {
+                if (tag && tag.trim() !== '') {
                   return (
                     <span key={uuidv4()} className={styles.tag}>
                       {tag}
