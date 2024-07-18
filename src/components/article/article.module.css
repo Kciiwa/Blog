@@ -49,6 +49,16 @@
   cursor: pointer;
 }
 
+.activeLikeBtn {
+  background-image: url('../../img/redLike.svg');
+  width: 16px;
+  height: 16px;
+  background-size: 16px 16px;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+}
+
 .tagList {
   display: flex;
   gap: 5px;

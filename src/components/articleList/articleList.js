@@ -11,6 +11,7 @@ function ArticleList() {
   const [page, setPage] = useState(1)
   const limit = 5
   const offset = (page - 1) * limit
+  const token = localStorage.getItem('token')
   const {
     data = { articles: [], articlesCount: 0 },
     isLoading,
@@ -18,13 +19,12 @@ function ArticleList() {
   } = useGetArticlesQuery({
     limit,
     offset,
+    token,
   })
 
   useEffect(() => {
     refetch()
   }, [refetch])
-
-  console.log(data.articlesCount)
 
   if (isLoading) return <h1>Loading...</h1>
 
@@ -40,6 +40,7 @@ function ArticleList() {
             key={item.slug}
             slug={item.slug}
             title={item.title}
+            favorited={item.favorited}
             description={item.description}
             tagList={item.tagList}
             favoritesCount={item.favoritesCount}

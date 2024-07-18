@@ -5,7 +5,13 @@ export const articlesApi = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: 'https://blog.kata.academy/api/' }),
   endpoints: (build) => ({
     getArticles: build.query({
-      query: ({ limit, offset }) => `articles?limit=${limit}&offset=${offset}`,
+      query: ({ limit, offset, token }) => ({
+        url: `articles?limit=${limit}&offset=${offset}`,
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}` || null,
+        },
+      }),
     }),
     getArticle: build.query({
       query: ({ slug }) => `articles/${slug}`,
@@ -63,6 +69,24 @@ export const articlesApi = createApi({
         },
       }),
     }),
+    likeArticle: build.mutation({
+      query: ({ token, slug }) => ({
+        url: `articles/${slug}/favorite`,
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }),
+    }),
+    unlikeArticle: build.mutation({
+      query: ({ token, slug }) => ({
+        url: `articles/${slug}/favorite`,
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }),
+    }),
   }),
 })
 
@@ -75,4 +99,6 @@ export const {
   useCreateArticleMutation,
   useUpdateArticleMutation,
   useDeleteArticleMutation,
+  useLikeArticleMutation,
+  useUnlikeArticleMutation,
 } = articlesApi
