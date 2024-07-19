@@ -8,13 +8,8 @@ import { setUser } from '../redux/userSlice'
 
 function Layout() {
   const token = localStorage.getItem('token')
-  // const user = useSelector((state) => state.user.user)
   const username = localStorage.getItem('username')
   const image = localStorage.getItem('image')
-
-  // if (localStorage.getItem('image') === undefined) {
-  //   const image = 'https://static.productionready.io/images/smiley-cyrus.jpg'
-  // }
 
   const navigate = useNavigate()
   const dispatch = useDispatch()

@@ -13,10 +13,6 @@
 
 .form {
   font-family: Roboto !important;
-  /* display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px; */
 }
 
 .input {
@@ -142,4 +138,11 @@ input[type='checkbox']:checked + .checkbox:after {
 
 .signInLink {
   color: #1890ff;
+}
+
+.loading {
+  position: absolute;
+  top: 90px;
+  left: 45%;
+  z-index: 1;
 }

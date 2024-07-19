@@ -17,7 +17,6 @@ import ModalWindow from '../modalWindow/modalWindow'
 import styles from './fullArticle.module.css'
 
 function FullArticle({ initialIsLiked, initialCountOfLikes }) {
-  // console.log(`initial isliked: ${initialIsLiked}`)
   const [modal, setModal] = useState(false)
   const currentUsername = localStorage.getItem('username')
   const navigate = useNavigate()
@@ -26,19 +25,11 @@ function FullArticle({ initialIsLiked, initialCountOfLikes }) {
   const token = localStorage.getItem('token')
 
   const { data = {}, isLoading, refetch } = useGetArticleQuery({ slug })
-  // console.log(data.article)
   const [isLiked, setIsLiked] = useState(initialIsLiked)
   const [countOfLikes, setCountOfLikes] = useState(initialCountOfLikes)
 
   const [deleteArticle] = useDeleteArticleMutation()
   const { article } = data
-
-  // useEffect(() => {
-  //   if (article) {
-  //     setIsLiked(article.favorited)
-  //     setCountOfLikes(article.favoritesCount)
-  //   }
-  // }, [article.favorited])
 
   const dateOfCreation =
     article?.createdAt !== undefined
@@ -68,8 +59,6 @@ function FullArticle({ initialIsLiked, initialCountOfLikes }) {
   const [likeArticle] = useLikeArticleMutation()
   const [unlikeArticle] = useUnlikeArticleMutation()
 
-  // console.log(isLiked)
-
   const onHandleLike = useCallback(async () => {
     if (token) {
       if (!isLiked) {
@@ -82,7 +71,7 @@ function FullArticle({ initialIsLiked, initialCountOfLikes }) {
           await setCountOfLikes((prevState) => prevState + 1)
           refetch()
         } catch (err) {
-          console.error(`Не могу поставить лайк... ${err}`)
+          console.error(`Не получилось поставить лайк... ${err}`)
         }
       } else if (isLiked) {
         try {
@@ -94,7 +83,7 @@ function FullArticle({ initialIsLiked, initialCountOfLikes }) {
           await setCountOfLikes((prevState) => prevState - 1)
           refetch()
         } catch (err) {
-          console.error(`Не могу убрать лайк... ${err}`)
+          console.error(`Не получилось убрать лайк... ${err}`)
         }
       }
     }

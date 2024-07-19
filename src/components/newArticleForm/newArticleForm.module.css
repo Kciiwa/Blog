@@ -110,7 +110,6 @@
   color: var(--info-color);
   border-radius: 5px;
   background-color: transparent;
-  /* margin-left: 16px; */
   transition: all 0.1s ease;
 }
 
@@ -141,4 +140,11 @@
 
 .tagsContainer {
   margin-top: 16px;
+}
+
+.loading {
+  position: absolute;
+  top: 90px;
+  left: 45%;
+  z-index: 1;
 }

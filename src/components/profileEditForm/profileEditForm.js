@@ -2,20 +2,22 @@
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 
 import { setError, setLoading, setUser } from '../../redux/userSlice'
 import { useEditProfileMutation } from '../../redux/api'
+import ErrorAlert from '../errorAlert/errorAlert'
 
 import styles from './profileEditForm.module.css'
 
 function ProfileEditForm() {
   const dispatch = useDispatch()
-  const [error, setErrorLocal] = useState([])
-  //   const [success, setSuccess] = useState(false)
+  const navigate = useNavigate()
+  const [errorLocal, setErrorLocal] = useState([])
 
   const { username, email, image } = useSelector((state) => state.user.user)
 
-  const [editProfile] = useEditProfileMutation()
+  const [editProfile, { error, isLoading }] = useEditProfileMutation()
 
   const onSubmit = async (data) => {
     dispatch(setLoading(true))
@@ -31,16 +33,12 @@ function ProfileEditForm() {
         },
         token: localStorage.getItem('token'),
       }).unwrap()
-
-      console.log('User edited successfully:', userData)
-      //   localStorage.setItem('token', userData.user.token)
+      navigate('/')
       localStorage.setItem('username', userData.user.username)
       localStorage.setItem('image', userData.user.image)
       dispatch(setUser(userData.user))
-      // console.log(` из стора ${store.getState()}`)
-      //   setSuccess(true)
     } catch (err) {
-      setErrorLocal([...error, err.message])
+      setErrorLocal([...errorLocal, err.message])
       dispatch(setError(err.message))
     } finally {
       dispatch(setLoading(false))
@@ -55,6 +53,8 @@ function ProfileEditForm() {
 
   return (
     <div className={styles.formWrapper}>
+      {isLoading ? <h3 className={styles.loading}>Loading...</h3> : null}
+      {error ? <ErrorAlert errors={error.data.errors} /> : null}
       <h3 className={styles.title}>Edit Profile</h3>
       <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
         <label className={styles.textLabel}>

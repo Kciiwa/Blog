@@ -1,6 +1,5 @@
 import { Route, Routes } from 'react-router-dom'
 
-// import ArticleListPage from './pages/articleListPage'
 import ArticleListPage from './pages/articleListPage'
 import { Layout } from './components/layout'
 import FullArticlePage from './pages/fullArticlePage'
@@ -9,6 +8,7 @@ import SignInPage from './pages/sign-in'
 import Profile from './pages/profile'
 import NewArticlePage from './pages/new-article'
 import EditArticlePage from './pages/editArticlePage'
+import PrivateRoute from './router/privateRoute'
 
 function App() {
   return (
@@ -18,9 +18,11 @@ function App() {
         <Route path="/fullArticlePage/:slug" element={<FullArticlePage />} />
         <Route path="/sign-up" element={<SignUpPage />} />
         <Route path="/sign-in" element={<SignInPage />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/new-article" element={<NewArticlePage />} />
-        <Route path="/articles/:slug/edit" element={<EditArticlePage />} />
+        <Route element={<PrivateRoute />}>
+          <Route path="/new-article" element={<NewArticlePage />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/articles/:slug/edit" element={<EditArticlePage />} />
+        </Route>
       </Route>
     </Routes>
   )

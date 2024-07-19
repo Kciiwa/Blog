@@ -1,16 +1,22 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { Pagination } from 'antd'
 
 import { useGetArticlesQuery } from '../../redux/api'
 import Article from '../article/article'
-// import ArticlePagination from '../pagination/pagination'
 
 import styles from './articleList.module.css'
 
 function ArticleList() {
-  const [page, setPage] = useState(1)
+  const location = useLocation()
+  const navigate = useNavigate()
+
+  const searchParams = new URLSearchParams(location.search)
+  // eslint-disable-next-line radix
+  const currentPage = parseInt(searchParams.get('page')) || 1
+
   const limit = 5
-  const offset = (page - 1) * limit
+  const offset = (currentPage - 1) * limit
   const token = localStorage.getItem('token')
   const {
     data = { articles: [], articlesCount: 0 },
@@ -24,13 +30,16 @@ function ArticleList() {
 
   useEffect(() => {
     refetch()
-  }, [refetch])
+  }, [refetch, currentPage])
 
   if (isLoading) return <h1>Loading...</h1>
 
   const totalPages = Math.ceil(data.articlesCount / limit)
 
-  const onChangePage = (pageNumber) => setPage(pageNumber)
+  const onChangePage = (pageNumber) => {
+    searchParams.set('page', pageNumber)
+    navigate(`${location.pathname}?${searchParams.toString()}`)
+  }
 
   return (
     <>
@@ -51,12 +60,12 @@ function ArticleList() {
       </section>
       <div className={styles.paginationWapper}>
         <Pagination
-          current={page}
-          total={totalPages}
+          current={currentPage}
+          total={totalPages * limit}
           onChange={onChangePage}
           hideOnSinglePage
           showSizeChanger={false}
-          pageSize={5}
+          pageSize={limit}
         />
       </div>
     </>

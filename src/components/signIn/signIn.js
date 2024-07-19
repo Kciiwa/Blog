@@ -6,67 +6,50 @@ import { useDispatch } from 'react-redux'
 
 import { setError, setLoading, setUser } from '../../redux/userSlice'
 import { useLoginUserMutation } from '../../redux/api'
+import ErrorAlert from '../errorAlert/errorAlert'
 
 import style from './signIn.module.css'
 
 function SignIn() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
-  const [error, setErrorLocal] = useState([])
-  const [success, setSuccess] = useState(false)
+  const [errorLocal, setErrorLocal] = useState([])
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm()
 
-  const [loginUser] = useLoginUserMutation()
+  const [loginUser, { error, isLoading }] = useLoginUserMutation()
 
   const onSubmit = async (data) => {
     dispatch(setLoading(true))
     try {
       const userData = await loginUser({
         user: {
-          // username: data.username,
           email: data.email,
           password: data.password,
         },
       }).unwrap()
-      console.log('User logged in successfully:', userData)
       localStorage.setItem('token', userData.user.token)
       dispatch(setUser(userData.user))
-      setSuccess(true)
       localStorage.setItem('username', userData.user.username)
       localStorage.setItem('image', userData.user.image)
 
       navigate('/')
     } catch (err) {
-      setErrorLocal([...error, err.message])
+      setErrorLocal([...errorLocal, err.message])
       dispatch(setError(err.message))
     } finally {
       dispatch(setLoading(false))
     }
   }
 
-  // const { data = { articles: [] } } = useGetArticleByUsernameQuery(
-  //   // eslint-disable-next-line no-return-await
-  //   async () => await localStorage.getItem('username')
-  // )
-  // console.log(data)
-
   return (
     <div className={style.formWrapper}>
-      {error.length !== 0 && (
-        <div className={style.errorMessage}>
-          {error.map((e, index) => (
-            // eslint-disable-next-line react/no-array-index-key
-            <p key={index}>{e}</p>
-          ))}
-        </div>
-      )}
-      {success && (
-        <div className={style.successMessage}>Login successful! You are now logged in.</div>
-      )}
+      {isLoading ? <h3 className={style.loading}>Loading...</h3> : null}
+      {error ? <ErrorAlert errors={error.data.errors} /> : null}
+
       <h3 className={style.title}>Sign In</h3>
       <form className={style.form} onSubmit={handleSubmit(onSubmit)}>
         <label className={style.textLabel}>

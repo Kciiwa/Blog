@@ -77,3 +77,10 @@
 .signInLink {
   color: #1890ff;
 }
+
+.loading {
+  position: absolute;
+  top: 90px;
+  left: 45%;
+  z-index: 1;
+}

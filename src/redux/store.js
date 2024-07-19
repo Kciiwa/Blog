@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit'
 
 import { articlesApi } from './api'
-import userReducer from './userSlice' // Импортируем ваш срез состояния для пользователя
+import userReducer from './userSlice'
 
 const store = configureStore({
   reducer: {
