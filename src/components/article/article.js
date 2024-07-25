@@ -26,8 +26,8 @@ function Article({
   const [countOfLikes, setCountOfLikes] = useState(favoritesCount)
   const token = localStorage.getItem('token')
 
-  const [likeArticle] = useLikeArticleMutation()
-  const [unlikeArticle] = useUnlikeArticleMutation()
+  const [likeArticle, { isLoading: isLiking }] = useLikeArticleMutation()
+  const [unlikeArticle, { isLoading: isUnliking }] = useUnlikeArticleMutation()
 
   if (!title || !description || !author || !createdAt) {
     return <h1>Loading...</h1>
@@ -48,7 +48,7 @@ function Article({
           setIsLiked(true)
           setCountOfLikes((prevState) => prevState + 1)
         } catch (err) {
-          console.error(`Не могу поставить лайк... ${err}`)
+          console.error(`Не поставить лайк... ${err}`)
         }
       } else {
         try {
@@ -59,7 +59,7 @@ function Article({
           setIsLiked(false)
           setCountOfLikes((prevState) => prevState - 1)
         } catch (err) {
-          console.error(`Не могу убрать лайк... ${err}`)
+          console.error(`Не убрать лайк... ${err}`)
         }
       }
     }
@@ -81,6 +81,7 @@ function Article({
               type="button"
               className={token && isLiked ? styles.activeLikeBtn : styles.likeBtn}
               onClick={onHandleLike}
+              disabled={isLiking || isUnliking}
             />
             <span className={styles.countLikes}>{countOfLikes}</span>
           </div>

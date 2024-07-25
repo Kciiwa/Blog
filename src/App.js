@@ -9,6 +9,7 @@ import Profile from './pages/profile'
 import NewArticlePage from './pages/new-article'
 import EditArticlePage from './pages/editArticlePage'
 import PrivateRoute from './router/privateRoute'
+import AuthorRoute from './router/authorRoute'
 
 function App() {
   return (
@@ -21,7 +22,9 @@ function App() {
         <Route element={<PrivateRoute />}>
           <Route path="/new-article" element={<NewArticlePage />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="/articles/:slug/edit" element={<EditArticlePage />} />
+          <Route element={<AuthorRoute />}>
+            <Route path="/articles/:slug/edit" element={<EditArticlePage />} />
+          </Route>
         </Route>
       </Route>
     </Routes>

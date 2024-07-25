@@ -6,7 +6,6 @@ import { useDispatch } from 'react-redux'
 
 import { setError, setLoading, setUser } from '../../redux/userSlice'
 import { useLoginUserMutation } from '../../redux/api'
-import ErrorAlert from '../errorAlert/errorAlert'
 
 import style from './signIn.module.css'
 
@@ -48,7 +47,6 @@ function SignIn() {
   return (
     <div className={style.formWrapper}>
       {isLoading ? <h3 className={style.loading}>Loading...</h3> : null}
-      {error ? <ErrorAlert errors={error.data.errors} /> : null}
 
       <h3 className={style.title}>Sign In</h3>
       <form className={style.form} onSubmit={handleSubmit(onSubmit)}>
@@ -56,7 +54,7 @@ function SignIn() {
           <p className={style.textLabel}>Email address</p>
           <input
             className={
-              errors.email
+              errors.email || error
                 ? `${style.error} ${style.email} ${style.input}`
                 : `${style.email} ${style.input}`
             }
@@ -72,7 +70,7 @@ function SignIn() {
           <p className={style.textLabel}>Password</p>
           <input
             className={
-              errors.password
+              errors.password || error
                 ? `${style.error} ${style.password} ${style.input}`
                 : `${style.password} ${style.input}`
             }
@@ -89,7 +87,10 @@ function SignIn() {
           />
         </label>
         {errors.password && <span className={style.required}>{errors.password.message}</span>}
-        <input className={style.submitBtn} type="submit" value="Login" />
+        {error?.data?.errors && (
+          <span className={style.required}>email or password is invalid</span>
+        )}
+        <input className={style.submitBtn} type="submit" value="Login" disabled={isLoading} />
       </form>
       <p className={style.signInText}>
         Don’t have an account?{' '}

@@ -12,13 +12,14 @@ function ErrorAlert({ errors }) {
   }
 
   const errorMessages = Object.entries(errors).map(([field, message]) => (
-    <pbutton
+    <button
+      type="button"
       key={field}
       className={`${styles.message} ${visibleErrors[field] ? styles.visible : styles.hidden}`}
       onClick={() => handleDismiss(field)}
     >
       {field}: {message}
-    </pbutton>
+    </button>
   ))
 
   return <div className={styles.alertWrapper}>{errorMessages}</div>

@@ -13,6 +13,14 @@ function NewArticleForm({ editmode = false, article }) {
   const { slug } = useParams()
   const navigate = useNavigate()
 
+  const authorName = localStorage.getItem('username')
+
+  useEffect(() => {
+    if (editmode && slug && article && article.author.username !== authorName) {
+      navigate(`/fullArticlePage/${slug}`)
+    }
+  }, [])
+
   const {
     register,
     handleSubmit,
@@ -56,9 +64,9 @@ function NewArticleForm({ editmode = false, article }) {
           },
           token: localStorage.getItem('token'),
         }).unwrap()
-        console.log('article created successfully: ', articleData)
+        navigate(`/fullArticlePage/${articleData.article.slug}`)
       } else {
-        const articleData = await updateArticle({
+        await updateArticle({
           body: {
             article: {
               title: data.title,
@@ -70,9 +78,9 @@ function NewArticleForm({ editmode = false, article }) {
           token: localStorage.getItem('token'),
           slug,
         }).unwrap()
-        console.log('article updated successfully: ', articleData)
+        navigate(`/fullArticlePage/${slug}`)
       }
-      navigate('/')
+      // navigate('/')
     } catch (err) {
       console.error(err.message)
     }
@@ -151,7 +159,12 @@ function NewArticleForm({ editmode = false, article }) {
             </label>
           </div>
 
-          <input className={styles.submitBtn} type="submit" value="Send" />
+          <input
+            className={styles.submitBtn}
+            type="submit"
+            value="Send"
+            disabled={isCreating || isUpdating}
+          />
         </form>
       </div>
     </>

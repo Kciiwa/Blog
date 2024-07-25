@@ -8,7 +8,6 @@ import { useDispatch } from 'react-redux'
 
 import { useAddUserMutation } from '../../redux/api'
 import { setUser, setLoading, setError } from '../../redux/userSlice'
-import ErrorAlert from '../errorAlert/errorAlert'
 
 import style from './signUp.module.css'
 
@@ -53,7 +52,6 @@ function SignUp() {
   return (
     <>
       {isLoading ? <h3 className={style.loading}>Loading...</h3> : null}
-      {error ? <ErrorAlert errors={error.data.errors} /> : null}
 
       <div className={style.formWrapper}>
         <h3 className={style.title}>Create new account</h3>
@@ -62,7 +60,7 @@ function SignUp() {
             <p className={style.textLabel}>Username</p>
             <input
               className={
-                errors.username
+                errors.username || error?.data?.errors?.username
                   ? `${style.error} ${style.username} ${style.input}`
                   : `${style.username} ${style.input}`
               }
@@ -85,12 +83,15 @@ function SignUp() {
             />
           </label>
           {errors.username && <div className={style.required}>{errors.username.message}</div>}
+          {error?.data?.errors?.username && (
+            <div className={style.required}>{error?.data?.errors?.username}</div>
+          )}
 
           <label className={style.textLabel}>
             <p className={style.textLabel}>Email address</p>
             <input
               className={
-                errors.email
+                errors.email || error?.data?.errors?.email
                   ? `${style.error} ${style.email} ${style.input}`
                   : `${style.email} ${style.input}`
               }
@@ -102,7 +103,9 @@ function SignUp() {
             />
           </label>
           {errors.email && <span className={style.required}>{errors.email.message}</span>}
-
+          {error?.data?.errors?.email && (
+            <div className={style.required}>{error?.data?.errors?.email}</div>
+          )}
           <label className={style.textLabel}>
             <p className={style.textLabel}>Password</p>
             <input
@@ -156,7 +159,7 @@ function SignUp() {
             </div>
           </label>
 
-          <input className={style.submitBtn} type="submit" value="Create" />
+          <input className={style.submitBtn} type="submit" value="Create" disabled={isLoading} />
         </form>
 
         <p className={style.signInText}>

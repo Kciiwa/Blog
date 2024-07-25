@@ -68,6 +68,11 @@
   margin-top: 24px;
 }
 
+.submitBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .signInText {
   color: #8c8c8c;
   font-size: 12px;

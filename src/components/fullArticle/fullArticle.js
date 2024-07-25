@@ -1,7 +1,7 @@
 /* eslint-disable no-else-return */
 /* eslint-disable indent */
 import React, { useState, useCallback } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import Markdown from 'markdown-to-jsx'
 import { format } from 'date-fns'
 import { enGB } from 'date-fns/locale'
@@ -13,10 +13,13 @@ import {
   useUnlikeArticleMutation,
 } from '../../redux/api'
 import ModalWindow from '../modalWindow/modalWindow'
+import ErrorAlert from '../errorAlert/errorAlert'
 
 import styles from './fullArticle.module.css'
 
 function FullArticle({ initialIsLiked, initialCountOfLikes }) {
+  const location = useLocation()
+  const error = location.state?.error
   const [modal, setModal] = useState(false)
   const currentUsername = localStorage.getItem('username')
   const navigate = useNavigate()
@@ -28,7 +31,7 @@ function FullArticle({ initialIsLiked, initialCountOfLikes }) {
   const [isLiked, setIsLiked] = useState(initialIsLiked)
   const [countOfLikes, setCountOfLikes] = useState(initialCountOfLikes)
 
-  const [deleteArticle] = useDeleteArticleMutation()
+  const [deleteArticle, { isLoading: isDeleting }] = useDeleteArticleMutation()
   const { article } = data
 
   const dateOfCreation =
@@ -56,8 +59,8 @@ function FullArticle({ initialIsLiked, initialCountOfLikes }) {
     }
   }
 
-  const [likeArticle] = useLikeArticleMutation()
-  const [unlikeArticle] = useUnlikeArticleMutation()
+  const [likeArticle, { isLoading: isLiking }] = useLikeArticleMutation()
+  const [unlikeArticle, { isLoading: isUnliking }] = useUnlikeArticleMutation()
 
   const onHandleLike = useCallback(async () => {
     if (token) {
@@ -92,74 +95,83 @@ function FullArticle({ initialIsLiked, initialCountOfLikes }) {
   if (isLoading) return <h1>Loading...</h1>
 
   return (
-    <div className={styles.wrapper}>
-      <div className={styles.fullArticle}>
-        <div className={styles.info}>
-          <div className={styles.articleHeader}>
-            <h5 className={styles.title}>
-              {article?.title?.trim() !== '' ? article.title : 'No Title'}
-            </h5>
-            <div className={styles.likes}>
-              <button
-                type="button"
-                className={token && isLiked ? styles.activeLikeBtn : styles.likeBtn}
-                onClick={onHandleLike}
-              />
-              <span className={styles.countLikes}>{countOfLikes}</span>
-            </div>
-          </div>
-          <div className={styles.tagList}>
-            {article?.tagList?.length !== 0
-              ? article.tagList.map((tag) => {
-                  if (tag && tag.trim() !== '') {
-                    return (
-                      <span key={tag} className={styles.tag}>
-                        {tag}
-                      </span>
-                    )
-                  } else return null
-                })
-              : null}
-          </div>
-          <p className={styles.description}>{article.description}</p>
-        </div>
-        <div className={styles.authorEditWrapper}>
-          <div className={styles.author}>
-            <div className={styles.createdByAt}>
-              <h6 className={styles.username}>{article.author?.username}</h6>
-              <p className={styles.date}>{dateOfCreation}</p>
-            </div>
-            <img
-              className={styles.avatar}
-              src={article?.author?.image}
-              alt="author"
-              width="46px"
-              height="46px"
-            />
-          </div>
-          {currentUsername === article.author.username ? (
-            <div className={styles.buttons}>
-              <button type="button" className={styles.deleteBtn} onClick={showModal}>
-                Delete
-              </button>
-              <Link to={`/articles/${slug}/edit`} state={{ article }} className={styles.editBtn}>
-                Edit
-              </Link>
-              {modal && (
-                <ModalWindow
-                  closeModal={closeModal}
-                  handleAction={handleDelete}
-                  showModal={showModal}
+    <>
+      {error && <ErrorAlert errors={{ error }} />}
+      <div className={styles.wrapper}>
+        <div className={styles.fullArticle}>
+          <div className={styles.info}>
+            <div className={styles.articleHeader}>
+              <h5 className={styles.title}>
+                {article?.title?.trim() !== '' ? article.title : 'No Title'}
+              </h5>
+              <div className={styles.likes}>
+                <button
+                  type="button"
+                  className={token && isLiked ? styles.activeLikeBtn : styles.likeBtn}
+                  onClick={onHandleLike}
+                  disabled={isLiking || isUnliking}
                 />
-              )}
+                <span className={styles.countLikes}>{countOfLikes}</span>
+              </div>
             </div>
-          ) : null}
+            <div className={styles.tagList}>
+              {article?.tagList?.length !== 0
+                ? article.tagList.map((tag) => {
+                    if (tag && tag.trim() !== '') {
+                      return (
+                        <span key={tag} className={styles.tag}>
+                          {tag}
+                        </span>
+                      )
+                    } else return null
+                  })
+                : null}
+            </div>
+            <p className={styles.description}>{article.description}</p>
+          </div>
+          <div className={styles.authorEditWrapper}>
+            <div className={styles.author}>
+              <div className={styles.createdByAt}>
+                <h6 className={styles.username}>{article.author?.username}</h6>
+                <p className={styles.date}>{dateOfCreation}</p>
+              </div>
+              <img
+                className={styles.avatar}
+                src={article?.author?.image}
+                alt="author"
+                width="46px"
+                height="46px"
+              />
+            </div>
+            {currentUsername === article.author.username ? (
+              <div className={styles.buttons}>
+                <button
+                  type="button"
+                  className={styles.deleteBtn}
+                  onClick={showModal}
+                  disabled={isDeleting}
+                >
+                  Delete
+                </button>
+                <Link to={`/articles/${slug}/edit`} state={{ article }} className={styles.editBtn}>
+                  Edit
+                </Link>
+                {modal && (
+                  <ModalWindow
+                    closeModal={closeModal}
+                    handleAction={handleDelete}
+                    showModal={showModal}
+                  />
+                )}
+              </div>
+            ) : null}
+          </div>
+        </div>
+        <div className={styles.body}>
+          <Markdown options={{ forceBlock: true, wrapper: 'div' }}>{article?.body ?? ''}</Markdown>
         </div>
       </div>
-      <div className={styles.body}>
-        <Markdown options={{ forceBlock: true, wrapper: 'div' }}>{article?.body ?? ''}</Markdown>
-      </div>
-    </div>
+    </>
   )
 }
 

@@ -141,7 +141,7 @@ function ProfileEditForm() {
           />
         </label>
         {errors.avatarURL && <div className={styles.required}>{errors.avatarURL.message}</div>}
-        <input className={styles.submitBtn} type="submit" value="Save" />
+        <input className={styles.submitBtn} type="submit" value="Save" disabled={isLoading} />
       </form>
     </div>
   )
